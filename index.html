@@ -1648,13 +1648,14 @@ const SCHEMAS = {
     fields: [
       { key: "image", label: "ছবি", type: "image" },
       { key: "name", label: "নাম", type: "text" },
+      { key: "gender", label: "ভাই / বোন", type: "select", options: ["ভাই","বোন"] },
       { key: "bloodGroup", label: "রক্তের গ্রুপ", type: "select", options: ["A+","A-","B+","B-","AB+","AB-","O+","O-"] },
       { key: "visitCount", label: "কতবার রক্ত দিয়েছেন", type: "number" },
       { key: "hospitalName", label: "হাসপাতাল / স্থান", type: "text" },
       { key: "date", label: "তারিখ", type: "date" },
       { key: "hidePhoto", label: "ছবি লুকিয়ে রাখুন", type: "checkbox" }
     ],
-    blank: () => ({ id: genId(), donationNo: genDonationNo(), name: "ভাই", bloodGroup: "A+", visitCount: 1, hospitalName: "", image: "", hidePhoto: false, date: new Date().toISOString().slice(0, 10) })
+    blank: () => ({ id: genId(), donationNo: genDonationNo(), name: "ভাই", gender: "ভাই", bloodGroup: "A+", visitCount: 1, hospitalName: "", image: "", hidePhoto: false, date: new Date().toISOString().slice(0, 10) })
   },
   galleryPhoto: {
     title: "গ্যালারি ছবি", listKey: "donationPhotos",
