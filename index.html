@@ -544,6 +544,7 @@
       <button type="button" class="navItem" data-panel="steps"><i class="fa-solid fa-list-ol" aria-hidden="true"></i> ধাপসমূহ</button>
 
       <div class="sidebarGroupLabel">তথ্য ব্যবস্থাপনা</div>
+      <button type="button" class="navItem" data-panel="news"><i class="fa-solid fa-newspaper" aria-hidden="true"></i> সংবাদ <span class="navBadge" id="navBadgeNews">0</span></button>
       <button type="button" class="navItem" data-panel="team"><i class="fa-solid fa-users" aria-hidden="true"></i> টিম <span class="navBadge" id="navBadgeTeam">0</span></button>
       <button type="button" class="navItem" data-panel="faq"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> FAQ <span class="navBadge" id="navBadgeFaq">0</span></button>
       <button type="button" class="navItem" data-panel="testimonials"><i class="fa-solid fa-quote-left" aria-hidden="true"></i> সফলতার গল্প <span class="navBadge" id="navBadgeTestimonials">0</span></button>
@@ -609,6 +610,7 @@
         <div class="card">
           <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> কনটেন্ট সারাংশ</h3>
           <div class="quickList">
+            <div class="quickRow"><span class="dot"></span> <b id="qlNews">0টি</b> সংবাদ প্রকাশিত আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlFaq">0টি</b> FAQ প্রশ্ন প্রকাশিত আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlTestimonials">0টি</b> সফলতার গল্প যোগ করা আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlPartners">0টি</b> সহযোগী প্রতিষ্ঠান তালিকাভুক্ত</div>
@@ -744,6 +746,15 @@
             <div id="listStepDonor"></div>
           </div>
         </div>
+      </section>
+
+      <!-- ============ NEWS ============ -->
+      <section class="panel" data-panel="news">
+        <div class="panelHead">
+          <div><h2>সংবাদ</h2><p>ওয়েবসাইটের হোমপেজে দেখানো সংবাদ ও ঘোষণা — নতুনটি সবার আগে দেখা যাবে।</p></div>
+          <button type="button" class="btn primary" data-add-item="news"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন সংবাদ যোগ করুন</button>
+        </div>
+        <div id="listNews" class="partnerGrid"></div>
       </section>
 
       <!-- ============ TEAM ============ -->
@@ -1028,6 +1039,7 @@ const IMAGE_CROP_CONFIG = {
   logo:                 { ratio: 1,     width: 500,  height: 500, label: "প্রতিষ্ঠানের লোগো — 1:1" },
   image:                { ratio: 1,     width: 600,  height: 600, label: "ডোনেশন রেকর্ড ছবি — 1:1" },
   src:                  { ratio: 4 / 3, width: 1000, height: 750, label: "গ্যালারি ছবি — 4:3" },
+  newsImage:            { ratio: 16 / 9, width: 1280, height: 720, label: "সংবাদের ছবি — 16:9" },
   _default:             { ratio: 1,     width: 800,  height: 800, label: "ছবি — 1:1" }
 };
 
@@ -1207,7 +1219,7 @@ const DEFAULT_LANDING = {
   feature1Title: "যাচাইকৃত রক্তদাতা", feature1Text: "প্রতিটি রক্তদাতার তথ্য যাচাই করে তালিকাভুক্ত করা হয়, যাতে জরুরি সময়ে নির্ভরযোগ্য যোগাযোগ নিশ্চিত হয়।",
   feature2Title: "জরুরি সাড়া", feature2Text: "ব্লাড গ্রুপ ও এলাকা অনুযায়ী মুহূর্তেই কাছাকাছি রক্তদাতা খুঁজে বের করা যায়, একদম ফ্রি-তে।",
   feature3Title: "সহজ ও বিনামূল্যে", feature3Text: "কোনো সাইনআপ ফি বা লুকানো খরচ নেই — যে কেউ রক্তদাতা হতে বা খুঁজতে পারেন সম্পূর্ণ বিনামূল্যে।",
-  team: [], faqs: [], partners: [],
+  team: [], faqs: [], partners: [], news: [],
   processStepsRecipient: [], processStepsDonor: [], testimonials: [],
   contactName1: "নাম ১", contactPhone1: "01XXXXXXXXX",
   contactPhoto1: "", contactWhatsapp1: "", contactMessenger1: "",
@@ -1234,6 +1246,7 @@ function normalizeLandingData() {
   landingData.team = toArrayField(landingData.team);
   landingData.faqs = toArrayField(landingData.faqs);
   landingData.partners = toArrayField(landingData.partners);
+  landingData.news = toArrayField(landingData.news);
   landingData.processStepsRecipient = toArrayField(landingData.processStepsRecipient);
   landingData.processStepsDonor = toArrayField(landingData.processStepsDonor);
   landingData.testimonials = toArrayField(landingData.testimonials);
@@ -1285,6 +1298,7 @@ const PANEL_TITLES = {
   about: ["আমরা কারা", "প্ল্যাটফর্মের পরিচিতি ও ফিচার"],
   impact: ["ইমপ্যাক্ট / CTA", "রক্তদাতা হওয়ার আহ্বান ব্যান্ড"],
   steps: ["ধাপসমূহ", "রক্তদাতা খোঁজা ও রক্তদানের ধাপ"],
+  news: ["সংবাদ", "নিউজ ও ঘোষণা লেখা / প্রকাশ ব্যবস্থাপনা"],
   team: ["টিম সদস্য", "টিম মেম্বার ব্যবস্থাপনা"],
   faq: ["প্রায়শই জিজ্ঞাসিত প্রশ্ন", "FAQ ব্যবস্থাপনা"],
   testimonials: ["সফলতার গল্প", "টেস্টিমোনিয়াল ব্যবস্থাপনা"],
@@ -1328,6 +1342,32 @@ function renderImagePreview(key) {
 }
 function renderImagePreviews() {
   ["heroBackgroundImage", "aboutImage", "impactImage", "contactPhoto1", "contactPhoto2", "contactPhoto3"].forEach(renderImagePreview);
+}
+
+function newsDateLabel(dateStr) {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("bn-BD", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function renderNewsList() {
+  const el = document.getElementById("listNews");
+  const sorted = landingData.news.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  if (!sorted.length) {
+    el.innerHTML = emptyStateHtml("fa-newspaper", "এখনও কোনো সংবাদ যোগ করা হয়নি");
+  } else {
+    el.innerHTML = sorted.map(n =>
+      '<div class="partnerCard"><div class="logoWrap" style="height:90px; border-radius:10px;">' +
+        (n.newsImage ? '<img src="' + escAttr(n.newsImage) + '" alt="" style="max-height:90px;">' : '<i class="fa-solid fa-newspaper" aria-hidden="true"></i>') +
+      '</div>' +
+      '<div class="name" style="margin-bottom:2px;">' + escHtml(n.title || "শিরোনামহীন") + '</div>' +
+      '<div style="font-size:11px; color:var(--muted); margin-bottom:10px;">' + newsDateLabel(n.date) + '</div>' +
+      '<div class="acts"><button class="iconBtn" data-edit-item="news" data-id="' + n.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
+    ).join("");
+  }
+  document.getElementById("navBadgeNews").textContent = landingData.news.length;
+  document.getElementById("qlNews").textContent = landingData.news.length + "টি";
 }
 
 function renderTeamList() {
@@ -1479,6 +1519,7 @@ function renderAll() {
   normalizeLandingData();
   fillScalarForms();
   renderImagePreviews();
+  renderNewsList();
   renderTeamList();
   renderFaqList();
   renderTestimonialsList();
@@ -1540,6 +1581,16 @@ document.querySelectorAll("[data-imgclear]").forEach(btn => {
    process steps, donation records, and gallery photos
    ============================================================ */
 const SCHEMAS = {
+  news: {
+    title: "সংবাদ", listKey: "news",
+    fields: [
+      { key: "newsImage", label: "ছবি (ঐচ্ছিক)", type: "image" },
+      { key: "title", label: "শিরোনাম", type: "text" },
+      { key: "content", label: "বিস্তারিত", type: "textarea" },
+      { key: "date", label: "তারিখ", type: "date" }
+    ],
+    blank: () => ({ id: genId(), title: "", content: "", newsImage: "", date: new Date().toISOString().slice(0, 10) })
+  },
   team: {
     title: "টিম সদস্য", listKey: "team",
     fields: [
@@ -1713,7 +1764,8 @@ document.addEventListener("click", e => {
 });
 
 function renderListByKey(listKey) {
-  if (listKey === "team") renderTeamList();
+  if (listKey === "news") renderNewsList();
+  else if (listKey === "team") renderTeamList();
   else if (listKey === "faqs") renderFaqList();
   else if (listKey === "partners") renderPartnersList();
   else if (listKey === "testimonials") renderTestimonialsList();
