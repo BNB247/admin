@@ -328,13 +328,13 @@
 
   /* ---- donation records: ranked list (highest donation number first) ---- */
   .donationListHead {
-    display: grid; grid-template-columns: 32px 40px 96px 1fr 74px 40px; gap: 14px; padding: 0 16px 8px;
+    display: grid; grid-template-columns: 32px 40px 96px 1fr 74px 76px; gap: 14px; padding: 0 16px 8px;
     font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700;
   }
   .donationListHead span:nth-child(4) { text-align: left; }
   .donationList { display: flex; flex-direction: column; gap: 9px; }
   .donationRow {
-    display: grid; grid-template-columns: 32px 40px 96px 1fr 74px 40px; grid-template-areas: "rank thumb no info blood actions";
+    display: grid; grid-template-columns: 32px 40px 96px 1fr 74px 76px; grid-template-areas: "rank thumb no info blood actions";
     align-items: center; gap: 14px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-md);
     padding: 10px 16px; transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease);
   }
@@ -1493,7 +1493,7 @@ function renderDonationsList() {
           '<div class="donationNoBadge">#' + escHtml(r.donationNo) + '</div>' +
           '<div class="donationInfo"><b>' + escHtml(r.name) + '</b><span class="hosp"><i class="fa-solid fa-hospital" aria-hidden="true"></i>' + escHtml(r.hospitalName || "—") + '</span></div>' +
           '<div class="bloodGroupPill">' + escHtml(r.bloodGroup) + '</div>' +
-          '<div class="rowActions"><button class="iconBtn" data-edit-item="donationRecord" data-id="' + r.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div>' +
+          '<div class="rowActions"><a class="iconBtn" href="https://bnb247.github.io/bnb/?id=' + encodeURIComponent(r.donationNo || "") + '" target="_blank" rel="noopener" title="দেখুন"><i class="fa-solid fa-eye" aria-hidden="true"></i></a><button class="iconBtn" data-edit-item="donationRecord" data-id="' + r.id + '" title="এডিট করুন"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div>' +
         '</div>'
       ).join("") + '</div>';
   }
@@ -1763,6 +1763,11 @@ document.addEventListener("click", e => {
   const item = list.find(x => x.id === id);
   if (item) openItemModal(type, item);
 });
+
+/* view button now links straight to the public record page
+   (https://bnb247.github.io/bnb/?id=<donationNo>) via a plain <a>
+   tag rendered in renderDonationsList() above — no in-panel modal
+   needed anymore. */
 
 function renderListByKey(listKey) {
   if (listKey === "news") renderNewsList();
